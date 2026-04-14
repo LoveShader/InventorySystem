@@ -4884,6 +4884,18 @@
 		{
 			"Path": "$(ProjectDir)/Plugins/Developer/RiderLink/Binaries/Win64/UnrealEditor.modules",
 			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Inventory/Binaries/Win64/UnrealEditor-Inventory.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Inventory/Binaries/Win64/UnrealEditor-Inventory.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Inventory/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
 		}
 	],
 	"RuntimeDependencies": [
@@ -30618,6 +30630,10 @@
 		{
 			"Path": "$(ProjectDir)/Plugins/Developer/RiderLink/RiderLink.uplugin",
 			"Type": "UFS"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Inventory/Inventory.uplugin",
+			"Type": "UFS"
 		}
 	],
 	"BuildPlugins": [
@@ -30721,6 +30737,7 @@
 		"InterchangeAssets",
 		"InterchangeEditor",
 		"InterchangeTests",
+		"Inventory",
 		"KDevelopSourceCodeAccess",
 		"LauncherChunkInstaller",
 		"LevelSequenceEditor",
