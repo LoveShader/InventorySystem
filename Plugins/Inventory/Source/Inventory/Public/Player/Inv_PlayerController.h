@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Inv_PlayerController.generated.h"
 
+class UInv_HUDWidget;
 class UInputMappingContext;
 class UInputAction;
 
@@ -19,10 +20,17 @@ protected:
 	virtual void BeginPlay() override;
 private:
 	void PrimaryInteract();
+	void CreateHUDWidget();
 private:
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere, Category = Inventory)
 	TObjectPtr<UInputMappingContext> DefaultIMC;
 
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere, Category = Inventory)
 	TObjectPtr<UInputAction> PrimaryInteractAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Inventory)
+	TSubclassOf<UInv_HUDWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UInv_HUDWidget> HUDWidget;
 };
