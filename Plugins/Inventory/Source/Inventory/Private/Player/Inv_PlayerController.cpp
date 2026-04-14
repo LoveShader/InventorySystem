@@ -3,11 +3,37 @@
 
 #include "Player/Inv_PlayerController.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Inventory.h"
+
+void AInv_PlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+	{
+		if (PrimaryInteractAction == nullptr)
+		{
+			UE_LOG(LogInventory, Error, TEXT("PrimaryInteractAction has not set"));
+		}
+		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ThisClass::PrimaryInteract);
+
+	}
+}
 
 void AInv_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogInventory, Log, TEXT("Inventory Module Started"));
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if (IsValid(Subsystem))
+	{
+		Subsystem->AddMappingContext(DefaultIMC, 0);
+	}
+}
+
+void AInv_PlayerController::PrimaryInteract()
+{
+	UE_LOG(LogInventory, Log, TEXT("PrimaryInteract Key Pressed"));
 }
