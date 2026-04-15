@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Inventory.h"
+#include "Inv_HighlightableStaticMesh.h"
 #include "Items/Components/Inv_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/HUD/Inv_HUDWidget.h"
@@ -105,6 +106,11 @@ void AInv_PlayerController::TraceWithItems()
 		{
 			HUDWidget->HidePickupMessage();
 		}
+
+		if (UActorComponent* Highlightable = LastActor->FindComponentByInterface(UInv_Highlightable::StaticClass()))
+		{
+			IInv_Highlightable::Execute_UnHighlight(Highlightable);
+		}
 	}
 
 	// if ThisActor is Valid and LastActor is not Valid, there is a valid hit result
@@ -117,6 +123,11 @@ void AInv_PlayerController::TraceWithItems()
 			{
 				HUDWidget->ShowPickupMessage(ItemComponent->GetPickupMessage());
 			}
+		}
+
+		if (UActorComponent* Highlightable = ThisActor->FindComponentByInterface(UInv_Highlightable::StaticClass()))
+		{
+			IInv_Highlightable::Execute_Highlight(Highlightable);
 		}
 	}
 }
