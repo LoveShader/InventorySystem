@@ -5,7 +5,15 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Inventory.h"
+#include "Kismet/GameplayStatics.h"
 #include "Widgets/HUD/Inv_HUDWidget.h"
+
+AInv_PlayerController::AInv_PlayerController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+
+	TraceLenght = 500.0f;
+}
 
 void AInv_PlayerController::SetupInputComponent()
 {
@@ -18,8 +26,14 @@ void AInv_PlayerController::SetupInputComponent()
 			UE_LOG(LogInventory, Error, TEXT("PrimaryInteractAction has not set"));
 		}
 		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ThisClass::PrimaryInteract);
-
 	}
+}
+
+void AInv_PlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	TraceWithItems();
 }
 
 void AInv_PlayerController::BeginPlay()
@@ -50,5 +64,48 @@ void AInv_PlayerController::CreateHUDWidget()
 	if (IsValid(HUDWidget))
 	{
 		HUDWidget->AddToViewport();
+	}
+}
+
+void AInv_PlayerController::TraceWithItems()
+{
+	if (!IsValid(GEngine) || !IsValid(GEngine->GameViewport))
+		return;
+
+	// Get ScreenSpace Center Coordinates
+	FVector2D ViewportSize;
+	GEngine->GameViewport->GetViewportSize(ViewportSize);
+	const FVector2D ViewportCenter = FVector2D(ViewportSize.X / 2.0f, ViewportSize.Y / 2.0f);
+
+	// Get WorldSpace Trace Start and Trace Direction
+	// use Start and Direction to calculate Trace End
+	FVector TraceStart;
+	FVector Forward;
+	if (!UGameplayStatics::DeprojectScreenToWorld(this, ViewportCenter,  TraceStart, Forward))
+		return;
+
+	const FVector TraceEnd = TraceStart + Forward * TraceLenght;
+
+	//Do Line With, Trace Channel will be set in Blueprint
+	//use our custom Trace Channel to avoid uneffective trace
+	FHitResult TraceResult;
+	GetWorld()->LineTraceSingleByChannel(TraceResult, TraceStart, TraceEnd, ItemTraceChannel);
+
+	LastActor = ThisActor;
+	ThisActor = TraceResult.GetActor();
+	
+	if (LastActor == ThisActor)
+		return;
+
+	// if LastActor is Valid and ThisActor is not Valid, there is not a valid hit result
+	if (LastActor.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Stop Trace With Last Actor"));
+	}
+
+	// if ThisActor is Valid and LastActor is not Valid, there is a valid hit result
+	if (ThisActor.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Start Trace with This Actor"));
 	}
 }
