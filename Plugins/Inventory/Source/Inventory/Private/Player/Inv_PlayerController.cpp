@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Inventory.h"
+#include "Items/Components/Inv_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/HUD/Inv_HUDWidget.h"
 
@@ -100,12 +101,22 @@ void AInv_PlayerController::TraceWithItems()
 	// if LastActor is Valid and ThisActor is not Valid, there is not a valid hit result
 	if (LastActor.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Stop Trace With Last Actor"));
+		if (IsValid(HUDWidget))
+		{
+			HUDWidget->HidePickupMessage();
+		}
 	}
 
 	// if ThisActor is Valid and LastActor is not Valid, there is a valid hit result
 	if (ThisActor.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Start Trace with This Actor"));
+		UInv_ItemComponent* ItemComponent = ThisActor->FindComponentByClass<UInv_ItemComponent>();
+		if (IsValid(ItemComponent))
+		{
+			if (IsValid(HUDWidget))
+			{
+				HUDWidget->ShowPickupMessage(ItemComponent->GetPickupMessage());
+			}
+		}
 	}
 }
