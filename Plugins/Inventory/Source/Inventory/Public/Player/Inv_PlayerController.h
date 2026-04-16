@@ -26,7 +26,7 @@ private:
 	void CreateHUDWidget();
 	void TraceWithItems();
 
-	UFUNCTION(Blueprintable)
+	UFUNCTION(BlueprintCallable)
 	void ToggleInventory();
 private:
 	UPROPERTY(EditAnywhere, Category = Inventory)
