@@ -9,6 +9,7 @@
 class UInv_HUDWidget;
 class UInputMappingContext;
 class UInputAction;
+class UInv_InventoryComponent;
 
 UCLASS()
 class INVENTORY_API AInv_PlayerController : public APlayerController
@@ -24,12 +25,18 @@ private:
 	void PrimaryInteract();
 	void CreateHUDWidget();
 	void TraceWithItems();
+
+	UFUNCTION(Blueprintable)
+	void ToggleInventory();
 private:
 	UPROPERTY(EditAnywhere, Category = Inventory)
 	TObjectPtr<UInputMappingContext> DefaultIMC;
 
 	UPROPERTY(EditAnywhere, Category = Inventory)
 	TObjectPtr<UInputAction> PrimaryInteractAction;
+	
+	UPROPERTY(EditAnywhere, Category = Inventory)
+	TObjectPtr<UInputAction> ToggleInventoryAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 	TSubclassOf<UInv_HUDWidget> HUDWidgetClass;
@@ -48,4 +55,6 @@ private:
 
 	TWeakObjectPtr<AActor> LastActor;
 	TWeakObjectPtr<AActor> ThisActor;
+
+	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
 };

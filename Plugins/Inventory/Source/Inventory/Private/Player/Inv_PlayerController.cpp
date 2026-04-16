@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Inventory.h"
+#include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Components/Inv_HighlightableStaticMesh.h"
 #include "Items/Components/Inv_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -28,6 +29,7 @@ void AInv_PlayerController::SetupInputComponent()
 			UE_LOG(LogInventory, Error, TEXT("PrimaryInteractAction has not set"));
 		}
 		EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ThisClass::PrimaryInteract);
+		EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Started, this, &ThisClass::ToggleInventory);
 	}
 }
 
@@ -49,6 +51,7 @@ void AInv_PlayerController::BeginPlay()
 	}
 
 	CreateHUDWidget();
+	InventoryComponent = FindComponentByClass<UInv_InventoryComponent>();
 }
 
 void AInv_PlayerController::PrimaryInteract()
@@ -130,4 +133,12 @@ void AInv_PlayerController::TraceWithItems()
 			IInv_Highlightable::Execute_Highlight(Highlightable);
 		}
 	}
+}
+
+void AInv_PlayerController::ToggleInventory()
+{
+	if (!InventoryComponent.IsValid())
+		return;
+
+	InventoryComponent->ToggleInventoryMenu();
 }

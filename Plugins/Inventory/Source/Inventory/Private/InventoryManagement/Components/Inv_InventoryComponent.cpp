@@ -11,6 +11,14 @@ UInv_InventoryComponent::UInv_InventoryComponent()
 	
 }
 
+void UInv_InventoryComponent::ToggleInventoryMenu()
+{
+	if (!bInventoryMenuOpen)
+		OpenInventoryMenu();
+	else
+		CloseInventoryMenu();
+}
+
 
 void UInv_InventoryComponent::BeginPlay()
 {
@@ -31,7 +39,36 @@ void UInv_InventoryComponent::ConstructInventory()
 	if (IsValid(InventoryMenu))
 	{
 		InventoryMenu->AddToViewport();
+		CloseInventoryMenu();
 	}
 }
 
+void UInv_InventoryComponent::OpenInventoryMenu()
+{
+	if (!IsValid(InventoryMenu))	return;
 
+	if (!OwningController.IsValid() || !OwningController->IsLocalController()) return;
+	
+	bInventoryMenuOpen = true;
+	InventoryMenu->SetVisibility(ESlateVisibility::Visible);
+
+	//Set Mouse Input Mode
+	FInputModeGameAndUI InputMode;
+	OwningController->SetInputMode(InputMode);
+	OwningController->SetShowMouseCursor(true);
+}
+
+void UInv_InventoryComponent::CloseInventoryMenu()
+{
+	if (!IsValid(InventoryMenu))	return;
+
+	if (!OwningController.IsValid() || !OwningController->IsLocalController()) return;
+	
+	bInventoryMenuOpen = false;
+	InventoryMenu->SetVisibility(ESlateVisibility::Collapsed);
+
+	//Set Mouse Input Mode
+	FInputModeGameOnly InputMode;
+	OwningController->SetInputMode(InputMode);
+	OwningController->SetShowMouseCursor(false);
+}
