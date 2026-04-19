@@ -50,5 +50,5 @@ private:
 	TObjectPtr<UButton> Button_Consumables;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> Button_Craftables;;
+	TObjectPtr<UButton> Button_Craftables;
 };
