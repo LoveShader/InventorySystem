@@ -2,3 +2,48 @@
 
 
 #include "Widgets/Inventory/Spatial/Inv_SpatialInventory.h"
+#include "Components/Button.h"
+#include "Components/WidgetSwitcher.h"
+#include "Widgets/Inventory/Spatial/Inv_InventoryGrid.h"
+
+void UInv_SpatialInventory::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	Button_Equippables->OnClicked.AddDynamic(this, &ThisClass::ShowEquippables);
+	Button_Consumables->OnClicked.AddDynamic(this, &ThisClass::ShowConsumables);
+	Button_Craftables->OnClicked.AddDynamic(this, &ThisClass::ShowCraftables);
+
+	ShowEquippables();
+}
+
+void UInv_SpatialInventory::ShowEquippables()
+{
+	SetActiveGrid(Button_Equippables, Grid_Equippables);
+}
+
+void UInv_SpatialInventory::ShowConsumables()
+{
+	SetActiveGrid(Button_Consumables, Grid_Consumables);
+}
+
+void UInv_SpatialInventory::ShowCraftables()
+{
+	SetActiveGrid(Button_Craftables, Grid_Craftables);
+}
+
+void UInv_SpatialInventory::DisableButton(UButton* Button)
+{
+	Button_Equippables->SetIsEnabled(true);
+	Button_Consumables->SetIsEnabled(true);
+	Button_Craftables->SetIsEnabled(true);
+	
+	Button->SetIsEnabled(false);
+}
+
+void UInv_SpatialInventory::SetActiveGrid(UButton* Button, UInv_InventoryGrid* Grid)
+{
+	DisableButton(Button);
+
+	Switcher->SetActiveWidget(Grid);
+}
