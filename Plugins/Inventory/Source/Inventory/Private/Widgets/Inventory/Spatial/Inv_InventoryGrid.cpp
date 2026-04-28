@@ -2,7 +2,6 @@
 
 
 #include "Widgets/Inventory/Spatial/Inv_InventoryGrid.h"
-
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
@@ -36,5 +35,4 @@ void UInv_InventoryGrid::ConstructGrids()
 			GridSlots.Add(GridSlot);
 		}
 	}
-	
 }
