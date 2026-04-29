@@ -56,7 +56,13 @@ void AInv_PlayerController::BeginPlay()
 
 void AInv_PlayerController::PrimaryInteract()
 {
-	UE_LOG(LogInventory, Log, TEXT("PrimaryInteract Key Pressed"));
+	if (!ThisActor.IsValid())	return;
+	UInv_ItemComponent* ItemComp = ThisActor->FindComponentByClass<UInv_ItemComponent>();
+	
+	if (!IsValid(ItemComp) || !InventoryComponent.IsValid())
+		return;
+
+	InventoryComponent->TryAddItem(ItemComp);
 }
 
 void AInv_PlayerController::CreateHUDWidget()
