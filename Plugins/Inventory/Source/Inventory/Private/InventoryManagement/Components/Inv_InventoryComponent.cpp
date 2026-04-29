@@ -4,6 +4,7 @@
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 #include "Player/Inv_PlayerController.h"
+#include "Widgets/Types/Inv_GridTypes.h"
 
 UInv_InventoryComponent::UInv_InventoryComponent()
 {
@@ -24,7 +25,14 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 	if (!ItemComponent)
 		return;
 
-	NoRoomInInventory.Broadcast();
+	FInv_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent);
+	if (Result.TotalAmountToFill == 0)
+	{
+		NoRoomInInventory.Broadcast();
+		return;
+	}
+
+	//TODO: Actually add the item to the inventory
 }
 
 
