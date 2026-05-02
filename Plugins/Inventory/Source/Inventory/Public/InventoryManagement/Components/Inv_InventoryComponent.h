@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InventoryManagement/FastArray/Inv_FastArray.h"
 #include "Inv_InventoryComponent.generated.h"
 
+struct FInv_InventoryFastArray;
 class UInv_ItemComponent;
 class UInv_InventoryBase;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInventoryItemChange, UInv_InventoryItem*, Item);
@@ -31,6 +33,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void CloseInventoryMenu();
 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
+	void AddRepSubObj(UObject* SubObj);
+	
+
 	FInventoryItemChange OnItemAdd;
 	FInventoryItemChange OnItemRemove;
 	FNoRoomInInventory NoRoomInInventory;
@@ -49,4 +56,8 @@ private:
 	TSubclassOf<UInv_InventoryBase> InventoryMenuClass;
 	
 	bool bInventoryMenuOpen = false;
+
+	/** FastArray for Inventory Item */
+	UPROPERTY(Replicated)
+	FInv_InventoryFastArray InventoryList;
 };

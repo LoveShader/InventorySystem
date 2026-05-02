@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Items/Manifest/Inv_ItemManifest.h"
 #include "Inv_ItemComponent.generated.h"
 
 
@@ -19,6 +20,10 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 	FString PickupMessage;
+
+	UPROPERTY(EditAnywhere, Category = Inventory)
+	FInv_ItemManifest InventoryManifest;
 public:
  	FORCEINLINE FString GetPickupMessage() const { return PickupMessage; }
+	FORCEINLINE FInv_ItemManifest GetInventoryManifest() const { return InventoryManifest; }
 };
