@@ -8,7 +8,7 @@
 #include "Player/Inv_PlayerController.h"
 #include "Widgets/Types/Inv_GridTypes.h"
 
-UInv_InventoryComponent::UInv_InventoryComponent()
+UInv_InventoryComponent::UInv_InventoryComponent() : InventoryList(this)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
@@ -51,8 +51,14 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 
 void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
 {
-	InventoryList.AddEntry(ItemComponent);
+	UInv_InventoryItem* InventoryItem = InventoryList.AddEntry(ItemComponent);
 
+	// BroadCast for Standalone and listenServer
+	if (GetNetMode() == NM_Standalone || GetNetMode() == NM_ListenServer)
+	{
+		OnItemAdd.Broadcast(InventoryItem);
+	}
+	
 	//TODO: Tell the Item Component to Destroy its owning Actor
 }
 

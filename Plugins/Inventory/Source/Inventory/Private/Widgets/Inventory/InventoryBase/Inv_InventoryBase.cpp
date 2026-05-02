@@ -5,5 +5,7 @@
 
 FInv_SlotAvailabilityResult UInv_InventoryBase::HasRoomForItem(UInv_ItemComponent* ItemComponent) const
 {
-	return FInv_SlotAvailabilityResult{};
+	FInv_SlotAvailabilityResult Result;
+	Result.TotalAmountToFill = 1;
+	return Result;
 }

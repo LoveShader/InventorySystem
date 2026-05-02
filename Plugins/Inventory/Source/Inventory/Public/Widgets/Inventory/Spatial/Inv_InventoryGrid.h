@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Items/Inv_InventoryItem.h"
 #include "Widgets/Types/Inv_GridTypes.h"
 #include "Inv_InventoryGrid.generated.h"
 
 
+class UInv_InventoryComponent;
 class UInv_GridSlot;
 class UCanvasPanel;
 
@@ -19,10 +21,14 @@ public:
 	virtual void NativeOnInitialized() override;
 private:
 	void ConstructGrids();
+
+	UFUNCTION()
+	void AddItem(UInv_InventoryItem* Item);
+
+	bool MatchesCategory(const UInv_InventoryItem* Item) const;
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;
-
 	/*
 	 * Grid Widget
 	 */
@@ -43,6 +49,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = GridSlots)
 	int TileSize;
+
+	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
 public:
 	FORCEINLINE	EInv_ItemCategory GetItemCategory() const {return ItemCategory;}
 };
