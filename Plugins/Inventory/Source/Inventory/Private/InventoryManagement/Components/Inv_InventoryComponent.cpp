@@ -73,6 +73,7 @@ void UInv_InventoryComponent::ConstructInventory()
 	if (IsValid(InventoryMenu))
 	{
 		InventoryMenu->AddToViewport();
+		InventoryMenu->SetInventoryComponent(this);
 		CloseInventoryMenu();
 	}
 }

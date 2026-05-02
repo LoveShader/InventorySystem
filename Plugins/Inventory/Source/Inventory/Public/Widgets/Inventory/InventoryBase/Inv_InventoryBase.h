@@ -7,6 +7,7 @@
 #include "Widgets/Types/Inv_GridTypes.h"
 #include "Inv_InventoryBase.generated.h"
 
+class UInv_InventoryComponent;
 class UInv_ItemComponent;
 /**
  * 
@@ -17,4 +18,9 @@ class INVENTORY_API UInv_InventoryBase : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual FInv_SlotAvailabilityResult HasRoomForItem(UInv_ItemComponent* ItemComponent) const;
+private:
+	UPROPERTY(BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInv_InventoryComponent> OwningInventoryComponent;
+public:
+	void SetInventoryComponent(UInv_InventoryComponent* InventoryComponent) {OwningInventoryComponent = InventoryComponent;}
 };

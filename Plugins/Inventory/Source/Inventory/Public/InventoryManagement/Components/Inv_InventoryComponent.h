@@ -28,6 +28,9 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_AddStacksToItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
 
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void CloseInventoryMenu();
+
 	FInventoryItemChange OnItemAdd;
 	FInventoryItemChange OnItemRemove;
 	FNoRoomInInventory NoRoomInInventory;
@@ -36,7 +39,6 @@ protected:
 private:
 	void ConstructInventory();
 	void OpenInventoryMenu();
-	void CloseInventoryMenu();
 private:
 	TWeakObjectPtr<APlayerController> OwningController;
 	
