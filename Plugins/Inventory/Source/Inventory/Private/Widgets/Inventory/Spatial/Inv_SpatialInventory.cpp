@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Widgets/Inventory/Spatial/Inv_InventoryGrid.h"
+#include "InventoryManagement/Utils/Inv_InventoryStatics.h"
 
 void UInv_SpatialInventory::NativeOnInitialized()
 {
@@ -19,7 +20,20 @@ void UInv_SpatialInventory::NativeOnInitialized()
 
 FInv_SlotAvailabilityResult UInv_SpatialInventory::HasRoomForItem(UInv_ItemComponent* ItemComponent) const
 {
-	return Super::HasRoomForItem(ItemComponent);
+	switch (UInv_InventoryStatics::GetItemCategoryFromItemComp(ItemComponent))
+	{
+		case EInv_ItemCategory::Equippable:
+			return Grid_Equippables->HasRoomForItem(ItemComponent);
+		case EInv_ItemCategory::Consumable:
+			return Grid_Consumables->HasRoomForItem(ItemComponent);
+		case EInv_ItemCategory::Craftable:
+			return Grid_Craftables->HasRoomForItem(ItemComponent);	
+	}
+	return FInv_SlotAvailabilityResult{};
+	
+	FInv_SlotAvailabilityResult Result;
+	Result.TotalAmountToFill = 1;
+	return Result;
 }
 
 void UInv_SpatialInventory::ShowEquippables()

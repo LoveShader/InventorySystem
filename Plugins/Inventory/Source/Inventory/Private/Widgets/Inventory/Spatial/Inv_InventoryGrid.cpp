@@ -7,6 +7,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "InventoryManagement/Utils/Inv_InventoryStatics.h"
+#include "Items/Components/Inv_ItemComponent.h"
 #include "Widgets/Inventory/GridSlots/Inv_GridSlot.h"
 #include "Widgets/Utils/Inv_WidgetUtils.h"
 
@@ -21,6 +22,11 @@ void UInv_InventoryGrid::NativeOnInitialized()
 	{
 		InventoryComponent->OnItemAdd.AddDynamic(this, &ThisClass::AddItem);
 	}
+}
+
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_ItemComponent* ItemComponent)
+{
+	return HasRoomForItem(ItemComponent->GetInventoryManifest());
 }
 
 void UInv_InventoryGrid::ConstructGrids()
@@ -56,4 +62,16 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const
 {
 	return ItemCategory == Item->GetItemManifest().GetItemCategory();
+}
+
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_InventoryItem* Item)
+{
+	return HasRoomForItem(Item->GetItemManifest());
+}
+
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& Manifest)
+{
+	FInv_SlotAvailabilityResult Result;
+	Result.TotalAmountToFill = 1;
+	return Result;
 }

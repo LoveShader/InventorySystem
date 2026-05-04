@@ -9,6 +9,7 @@
 #include "Inv_InventoryGrid.generated.h"
 
 
+class UInv_ItemComponent;
 class UInv_InventoryComponent;
 class UInv_GridSlot;
 class UCanvasPanel;
@@ -19,6 +20,8 @@ class INVENTORY_API UInv_InventoryGrid : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual void NativeOnInitialized() override;
+
+	FInv_SlotAvailabilityResult HasRoomForItem(UInv_ItemComponent* ItemComponent);
 private:
 	void ConstructGrids();
 
@@ -26,6 +29,9 @@ private:
 	void AddItem(UInv_InventoryItem* Item);
 
 	bool MatchesCategory(const UInv_InventoryItem* Item) const;
+
+	FInv_SlotAvailabilityResult HasRoomForItem(UInv_InventoryItem* Item);
+	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;
