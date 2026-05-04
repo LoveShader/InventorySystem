@@ -1,0 +1,42 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "Inv_SlottedItem.generated.h"
+
+class UInv_InventoryItem;
+class UImage;
+/**
+ * 
+ */
+UCLASS()
+class INVENTORY_API UInv_SlottedItem : public UUserWidget
+{
+	GENERATED_BODY()
+public:
+	UImage* GetImageIcon() const {return Image_Icon;}
+
+	/** Getter and Setter Functions */
+	void SetGridDimensions(FIntPoint InGridDimensions) {GridDimensions = InGridDimensions;}
+	FIntPoint GetGridDimensions() const {return GridDimensions;}
+	void SetGridIndex(int32 Index) {GridIndex = Index;}
+	int32 GetGridIndex() const {return GridIndex;}
+	bool bIsStackable() const {return bStackable;}
+	void SetIsStackable(bool Stackable) {bStackable = Stackable;}
+
+	void SetInventoryItem(UInv_InventoryItem* Item);
+	UInv_InventoryItem* GetInventoryItem() const {return InventoryItem.Get();}
+
+	void SetImageBrush(const FSlateBrush& Brush) const;
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> Image_Icon;
+
+	int32 GridIndex;
+	FIntPoint GridDimensions;
+	bool bStackable{false};
+
+	TWeakObjectPtr<class UInv_InventoryItem> InventoryItem;
+};
