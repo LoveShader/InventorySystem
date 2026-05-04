@@ -1,0 +1,45 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+
+#include "Inv_ItemFragment.generated.h"
+
+USTRUCT()
+struct FInv_ItemFragment
+{
+	GENERATED_BODY()
+
+	/** Rule of Five */
+	FInv_ItemFragment() = default;
+	FInv_ItemFragment(const FInv_ItemFragment& Other) = default;
+	FInv_ItemFragment(FInv_ItemFragment&& Other) = default;
+	FInv_ItemFragment& operator=(const FInv_ItemFragment& Other) = default;
+	FInv_ItemFragment& operator=(FInv_ItemFragment&& Other) = default;
+	virtual ~FInv_ItemFragment() {}
+
+	FGameplayTag GetFragmentTag() const {return FragmentTag;}
+	void SetFragmentTag(FGameplayTag NewTag) {FragmentTag = NewTag;}
+private:
+	
+	UPROPERTY(EditAnywhere, Category = Inventory)
+	FGameplayTag FragmentTag = FGameplayTag::EmptyTag;
+};
+
+USTRUCT()
+struct FInv_GridFragment : public FInv_ItemFragment
+{
+	GENERATED_BODY()
+
+	FIntPoint GetGridSize() const {return GridSize;}
+	void SetGridSize(FIntPoint NewGridSize) {GridSize = NewGridSize;}
+
+	float GetGridPadding() const {return GridPadding;}
+	void SetGridPadding(float NewGridPadding) {GridPadding = NewGridPadding;}
+private:
+	UPROPERTY(EditAnywhere, Category = Inventory)
+	FIntPoint GridSize{1,1,};
+
+	UPROPERTY(EditAnywhere, Category = Inventory)
+	float GridPadding{0.f};
+};
