@@ -32,6 +32,7 @@ private:
 
 	FInv_SlotAvailabilityResult HasRoomForItem(UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
+	void AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem);
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;

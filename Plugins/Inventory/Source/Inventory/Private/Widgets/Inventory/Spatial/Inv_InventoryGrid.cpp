@@ -56,7 +56,18 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 	if (!MatchesCategory(Item))
 		return;
 
-	UE_LOG(LogTemp, Warning, TEXT("Adding item"));
+	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
+
+	AddItemToIndices(Result, Item);
+}
+
+void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem)
+{
+	//1. Get Grid Fragment so we konw how many grid spaces the item takes
+	//2. Get Image Fragment so we have the icon to display
+	
+	//3. Create a widget to add to the grid
+	//4. Store the new widget in a container
 }
 
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const
@@ -73,5 +84,14 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 {
 	FInv_SlotAvailabilityResult Result;
 	Result.TotalAmountToFill = 1;
+
+	//Test Purpose, Create SlotAvailablity
+	FInv_SlotAvailability SlotAvailability;
+	SlotAvailability.AmountToFill = 1;
+	SlotAvailability.Index = 0;
+	
+	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability));
+	
 	return Result;
 }
+
