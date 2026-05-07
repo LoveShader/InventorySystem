@@ -69,7 +69,7 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 	for (const auto& Availability : Result.SlotAvailabilities)
 	{
 		AddItemAtIndex(NewItem, Availability.AmountToFill, Availability.Index, Result.bStackable);
-
+		
 		UpdateGridSlots(NewItem, Availability.Index);
 	}
 }
@@ -132,11 +132,15 @@ void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int3
 {
 	check(GridSlots.IsValidIndex(Index));
 
-	UInv_GridSlot* GridSlot = GridSlots[Index];
-	if (GridSlot)
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
+
+	const FIntPoint ItemRange = GridFragment != nullptr ? GridFragment->GetGridSize() : FIntPoint(1, 1);
+	
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, ItemRange, Columns, [](UInv_GridSlot* GridSlot)
 	{
 		GridSlot->SetOccupiedTexture();
-	}
+	});
+	
 }
 
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const
