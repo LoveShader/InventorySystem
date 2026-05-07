@@ -69,6 +69,8 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 	for (const auto& Availability : Result.SlotAvailabilities)
 	{
 		AddItemAtIndex(NewItem, Availability.AmountToFill, Availability.Index, Result.bStackable);
+
+		UpdateGridSlots(NewItem, Availability.Index);
 	}
 }
 
@@ -124,6 +126,17 @@ void UInv_InventoryGrid::SetSlottedItemImage(const UInv_SlottedItem* SlottedItem
 	const float IconTileWidth = TileSize - GridFragment->GetGridPadding() * 2;
 	Brush.ImageSize = GetDrawSize(GridFragment);
 	SlottedItem->SetImageBrush(Brush);
+}
+
+void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index)
+{
+	check(GridSlots.IsValidIndex(Index));
+
+	UInv_GridSlot* GridSlot = GridSlots[Index];
+	if (GridSlot)
+	{
+		GridSlot->SetOccupiedTexture();
+	}
 }
 
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const

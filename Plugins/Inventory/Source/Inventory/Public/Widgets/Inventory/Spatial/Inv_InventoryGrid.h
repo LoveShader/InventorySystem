@@ -42,6 +42,7 @@ private:
 	
 	FVector2D GetDrawSize(const FInv_GridFragment* GridFragment) const;
 	void SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment) const;
+	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index);
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;
