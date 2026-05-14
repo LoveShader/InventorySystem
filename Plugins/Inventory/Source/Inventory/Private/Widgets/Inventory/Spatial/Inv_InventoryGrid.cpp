@@ -155,6 +155,11 @@ void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int3
 	
 }
 
+bool UInv_InventoryGrid::IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const
+{
+	return CheckedIndices.Contains(Index);
+}
+
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const
 {
 	return ItemCategory == Item->GetItemManifest().GetItemCategory();
@@ -175,7 +180,8 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	// Determine how many stacks to add.
 	int32 AmountToFill = StackableFragment ? StackableFragment->GetStackCount() : 1;
 	const int32 MaxStackSize = StackableFragment ? StackableFragment->GetMaxStackSize() : 1;
-	
+
+	TSet<int32> CheckedIndices;
 	// For each Grid Slot:
 	for (const auto& GridSlot : GridSlots)
 	{
@@ -183,6 +189,8 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		if (AmountToFill == 0)
 			break;
 		// Is the index claimed yet?
+		if (IsIndexClaimed(CheckedIndices, GridSlot->GetTileIndex()))
+			continue;
 		// Can the item fit here? (i.e. is it out of grid bounds?)
 		// Is there room at this index? (i.e. are there other items in the way?)
 		// Check any other important conditions - ForEach2D over a 2D range
