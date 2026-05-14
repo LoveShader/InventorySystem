@@ -70,7 +70,7 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 	{
 		AddItemAtIndex(NewItem, Availability.AmountToFill, Availability.Index, Result.bStackable);
 		
-		UpdateGridSlots(NewItem, Availability.Index);
+		UpdateGridSlots(NewItem, Availability.Index, Result.bStackable, Availability.AmountToFill);
 	}
 }
 
@@ -128,21 +128,28 @@ void UInv_InventoryGrid::SetSlottedItemImage(const UInv_SlottedItem* SlottedItem
 	FSlateBrush Brush;
 	Brush.DrawAs = ESlateBrushDrawType::Image;
 	Brush.SetResourceObject(ImageFragment->GetIcon());
-	const float IconTileWidth = TileSize - GridFragment->GetGridPadding() * 2;
 	Brush.ImageSize = GetDrawSize(GridFragment);
 	SlottedItem->SetImageBrush(Brush);
 }
 
-void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index)
+void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount)
 {
 	check(GridSlots.IsValidIndex(Index));
 
 	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
 
 	const FIntPoint ItemRange = GridFragment != nullptr ? GridFragment->GetGridSize() : FIntPoint(1, 1);
-	
-	UInv_InventoryStatics::ForEach2D(GridSlots, Index, ItemRange, Columns, [](UInv_GridSlot* GridSlot)
+	//it the object is Stackable, Set it's StackAmount
+	if (bStackableItem)
 	{
+		GridSlots[Index]->SetStackCount(StackAmount);
+	}
+	
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, ItemRange, Columns, [&NewItem, &Index](UInv_GridSlot* GridSlot)
+	{
+		GridSlot->SetInventoryItem(NewItem);
+		GridSlot->SetAvailable(false);
+		GridSlot->SetUpperLeftIndex(Index);
 		GridSlot->SetOccupiedTexture();
 	});
 	
@@ -161,21 +168,22 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_InventoryIte
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& Manifest)
 {
 	FInv_SlotAvailabilityResult Result;
-	Result.TotalAmountToFill = 7;
-	Result.bStackable = true;
-
-	//Test Purpose, Create SlotAvailablity
-	FInv_SlotAvailability SlotAvailability;
-	SlotAvailability.AmountToFill = 2;
-	SlotAvailability.Index = 0;
-	
-	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability));
-
-	FInv_SlotAvailability SlotAvailability2;
-	SlotAvailability2.AmountToFill = 5;
-	SlotAvailability2.Index = 1;
-	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability2));
-
+	// Determine if the item is stackable
+	// Determine how many stacks to add.
+	// For each Grid Slot:
+		// If we don't have anymore to fill, break out of the loop early.
+		// Is the index claimed yet?
+		// Can the item fit here? (i.e. is it out of grid bounds?)
+		// Is there room at this index? (i.e. are there other items in the way?)
+		// Check any other important conditions - ForEach2D over a 2D range
+			// Index Claimed?
+			// Has valid item?
+			// If this item the same type as the item we're trying to add?
+			// If so, is this a stackable item?
+			// If stackable, is this slot at the max stack size already?
+		// How much to fill?
+		// Update the amount left to fill
+	// How much is the Remainder?
 	
 	return Result;
 }

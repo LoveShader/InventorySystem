@@ -27,13 +27,9 @@ FInv_SlotAvailabilityResult UInv_SpatialInventory::HasRoomForItem(UInv_ItemCompo
 		case EInv_ItemCategory::Consumable:
 			return Grid_Consumables->HasRoomForItem(ItemComponent);
 		case EInv_ItemCategory::Craftable:
-			return Grid_Craftables->HasRoomForItem(ItemComponent);	
+			return Grid_Craftables->HasRoomForItem(ItemComponent);
 	}
 	return FInv_SlotAvailabilityResult{};
-	
-	FInv_SlotAvailabilityResult Result;
-	Result.TotalAmountToFill = 1;
-	return Result;
 }
 
 void UInv_SpatialInventory::ShowEquippables()
