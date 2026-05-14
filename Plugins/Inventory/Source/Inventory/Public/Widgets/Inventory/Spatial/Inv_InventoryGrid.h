@@ -44,6 +44,8 @@ private:
 	void SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment) const;
 	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount);
 	bool IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const;
+	bool HasRoomAtIndex(const UInv_GridSlot* GridSlot, const FIntPoint& Dimensions);
+	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;
