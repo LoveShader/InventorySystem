@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Items/Inv_InventoryItem.h"
+#include "Widgets/Inventory/GridSlots/Inv_GridSlot.h"
 #include "Widgets/Types/Inv_GridTypes.h"
 #include "Inv_InventoryGrid.generated.h"
 
@@ -48,8 +49,9 @@ private:
 		const FIntPoint& Dimensions,
 		const TSet<int32>& CheckedIndices,
 		TSet<int32>& OutTentativelyClaimed);
-	bool CheckSlotConstrains(const UInv_GridSlot* GridSlot);
+	bool CheckSlotConstrains(const UInv_GridSlot* GridSlot, const TSet<int32>& CheckedIndices);
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
+	bool HasValidItem(const UInv_GridSlot* SubGridSlot) const;
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;
