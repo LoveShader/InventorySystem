@@ -15,6 +15,7 @@ struct INVENTORY_API FInv_ItemManifest
 
 	EInv_ItemCategory GetItemCategory() const {return ItemCategory;}
 	UInv_InventoryItem* Manifest(UObject* NewOuter);
+	FGameplayTag GetItemType() const {return ItemType;}
 
 	template<typename T>
 	requires(std::derived_from<T, FInv_ItemFragment>)
