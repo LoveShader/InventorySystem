@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Widgets/Inventory/Spatial/Inv_InventoryGrid.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
@@ -240,6 +239,17 @@ bool UInv_InventoryGrid::DoesItemTypeMatch(const UInv_InventoryItem* SubItem, co
 	return SubItem->GetItemManifest().GetItemType().MatchesTagExact(ItemType);
 }
 
+bool UInv_InventoryGrid::IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const
+{
+	if (StartIndex < 0 || StartIndex >= GridSlots.Num())
+		return false;
+
+	//Get EndRows and EndColumns
+	const int32 EndColumns = (StartIndex % Columns) + ItemDimensions.X;
+	const int32 EndRows = (StartIndex / Columns) + ItemDimensions.Y;
+	return EndColumns <= Columns && EndRows <= Rows;
+}
+
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const
 {
 	return ItemCategory == Item->GetItemManifest().GetItemCategory();
@@ -271,6 +281,11 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		// Is the index claimed yet?
 		if (IsIndexClaimed(CheckedIndices, GridSlot->GetTileIndex()))
 			continue;
+
+		// Is the item in grid bounds?
+		if (!IsInGridBounds(GridSlot->GetTileIndex(), GetItemDimensions(Manifest)))
+			continue;
+		
 		// Can the item fit here? (i.e. is it out of grid bounds?)
 		TSet<int32> TentativelyClaimed;
 		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest), CheckedIndices, TentativelyClaimed, Manifest.GetItemType(), MaxStackSize))
@@ -287,4 +302,3 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	
 	return Result;
 }
-
