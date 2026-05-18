@@ -48,6 +48,8 @@ struct FInv_InventoryFastArray : public FFastArraySerializer
 	UInv_InventoryItem* AddEntry(UInv_ItemComponent* ItemComponent);
 	UInv_InventoryItem* AddEntry(UInv_InventoryItem* Item);
 	void RemoveEntry(UInv_InventoryItem* Item);
+
+	UInv_InventoryItem* FindFirstItemByType(const FGameplayTag& ItemType);
 private:
 	friend UInv_InventoryComponent;
 
