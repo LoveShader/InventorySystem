@@ -33,6 +33,8 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_ItemComponen
 
 void UInv_InventoryGrid::ConstructGrids()
 {
+	GridSlots.Reserve(Rows * Columns);
+	
 	for (int j = 0; j < Rows; j++)
 	{
 		for (int i = 0; i < Columns; i++)
@@ -41,7 +43,7 @@ void UInv_InventoryGrid::ConstructGrids()
 			UInv_GridSlot* GridSlot = CreateWidget<UInv_GridSlot>(this, GridSlotClass);
 			CanvasPanel->AddChild(GridSlot);
 			const FIntPoint TilePosition = FIntPoint(i, j);
-			GridSlot->SetTileIndex(UInv_WidgetUtils::GetIndexFromPosition(i, j));
+			GridSlot->SetTileIndex(UInv_WidgetUtils::GetIndexFromPosition(TilePosition, Columns));
 
 			//Set Grid slot's Position and Size
 			UCanvasPanelSlot* GridCPS = UWidgetLayoutLibrary::SlotAsCanvasSlot(GridSlot);
@@ -322,7 +324,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		Result.TotalAmountToFill += AmountToFillInSlot;
 		Result.SlotAvailabilities.Emplace(
 			FInv_SlotAvailability(
-				HasValidItem(GridSlot) ? GridSlot->GetTileIndex() : GridSlot->GetUpperLeftIndex(),
+				HasValidItem(GridSlot) ? GridSlot->GetUpperLeftIndex() : GridSlot->GetTileIndex(),
 				Result.bStackable ? AmountToFillInSlot : 0,
 				HasValidItem(GridSlot)
 			)
