@@ -3,7 +3,9 @@
 
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 
+#include "Items/Inv_InventoryItem.h"
 #include "Items/Components/Inv_ItemComponent.h"
+#include "Items/Fragment/Inv_ItemFragment.h"
 #include "Net/UnrealNetwork.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 #include "Player/Inv_PlayerController.h"
@@ -49,11 +51,11 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 	} else if (Result.TotalAmountToFill > 0)
 	{
 		// This item type doesn't exist in the inventory. Create a new one and update all pertinent slots
-		Server_AddNewItem(ItemComponent, Result.bStackable ? Result.TotalAmountToFill : 0);
+		Server_AddNewItem(ItemComponent, Result.bStackable ? Result.TotalAmountToFill : 0, Result.Reminder);
 	}
 }
 
-void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
+void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder)
 {
 	UInv_InventoryItem* InventoryItem = InventoryList.AddEntry(ItemComponent);
 	InventoryItem->SetTotalStackCount(StackCount);
@@ -64,7 +66,7 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 		OnItemAdd.Broadcast(InventoryItem);
 	}
 	
-	//TODO: Tell the Item Component to Destroy its owning Actor
+	PickupItem(ItemComponent, Remainder);
 }
 
 void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent,
@@ -76,6 +78,9 @@ void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemCom
 		return;
 
 	Item->SetTotalStackCount(Item->GetTotalStackCount() + StackCount);
+
+	PickupItem(ItemComponent, Remainder);
+	
 }
 
 
@@ -116,6 +121,18 @@ void UInv_InventoryComponent::OpenInventoryMenu()
 	FInputModeGameAndUI InputMode;
 	OwningController->SetInputMode(InputMode);
 	OwningController->SetShowMouseCursor(true);
+}
+
+void UInv_InventoryComponent::PickupItem(UInv_ItemComponent* ItemComponent, int32 Remainder)
+{
+	if (Remainder == 0)
+	{
+		ItemComponent->Pickup();
+	}
+	else if (FInv_StackableFragment* StackableFragment = ItemComponent->GetInventoryManifest().GetFragmentOfTypeMutable<FInv_StackableFragment>())
+	{
+		StackableFragment->SetStackCount(Remainder);	
+	}
 }
 
 void UInv_InventoryComponent::CloseInventoryMenu()

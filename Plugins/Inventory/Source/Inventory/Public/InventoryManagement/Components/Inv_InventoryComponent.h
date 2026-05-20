@@ -25,7 +25,7 @@ public:
 	void TryAddItem(UInv_ItemComponent* ItemComp);
 
 	UFUNCTION(Server, Reliable)
-	void Server_AddNewItem(UInv_ItemComponent* ItemComponent, int32 StackCount);
+	void Server_AddNewItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
 
 	UFUNCTION(Server, Reliable)
 	void Server_AddStacksToItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
@@ -46,6 +46,8 @@ protected:
 private:
 	void ConstructInventory();
 	void OpenInventoryMenu();
+
+	void PickupItem(UInv_ItemComponent* ItemComponent, int32 Remainder);
 private:
 	TWeakObjectPtr<APlayerController> OwningController;
 	

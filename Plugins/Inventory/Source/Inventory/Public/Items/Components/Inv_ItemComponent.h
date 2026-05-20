@@ -15,8 +15,11 @@ class INVENTORY_API UInv_ItemComponent : public UActorComponent
 
 public:
 	UInv_ItemComponent();
-protected:
 
+	void Pickup();
+protected:
+	UFUNCTION(BlueprintImplementableEvent, Category="Inventory")
+	void OnPickedUp();
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 	FString PickupMessage;

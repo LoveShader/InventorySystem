@@ -9,3 +9,9 @@ UInv_ItemComponent::UInv_ItemComponent()
 	PickupMessage = FString("E - Pick up");
 }
 
+void UInv_ItemComponent::Pickup()
+{
+	OnPickedUp();
+	GetOwner()->Destroy();
+}
+
