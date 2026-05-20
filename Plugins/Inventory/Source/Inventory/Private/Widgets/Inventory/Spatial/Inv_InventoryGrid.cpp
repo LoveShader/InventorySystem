@@ -316,7 +316,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		
 		// How much to fill?
 		const int32 AmountToFillInSlot = DetermineFillAmountForSlot(Result.bStackable, MaxStackSize, AmountToFill, GridSlot);
-		if (AmountToFill == 0)
+		if (AmountToFillInSlot == 0)
 			continue;
 
 		CheckedIndices.Append(TentativelyClaimed);

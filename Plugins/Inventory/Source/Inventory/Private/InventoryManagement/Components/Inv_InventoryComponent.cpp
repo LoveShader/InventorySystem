@@ -56,6 +56,7 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
 {
 	UInv_InventoryItem* InventoryItem = InventoryList.AddEntry(ItemComponent);
+	InventoryItem->SetTotalStackCount(StackCount);
 
 	// BroadCast for Standalone and listenServer
 	if (GetNetMode() == NM_Standalone || GetNetMode() == NM_ListenServer)
@@ -69,6 +70,12 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent,
 	int32 StackCount, int32 Remainder)
 {
+	const FGameplayTag& ItemType = ItemComponent->GetInventoryManifest().GetItemType();
+	UInv_InventoryItem* Item = InventoryList.FindFirstItemByType(ItemType);
+	if (!IsValid(Item))
+		return;
+
+	Item->SetTotalStackCount(Item->GetTotalStackCount() + StackCount);
 }
 
 
