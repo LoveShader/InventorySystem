@@ -373,6 +373,43 @@ void UInv_InventoryGrid::RemoveItemFromGrid(UInv_InventoryItem* InventoryItem, c
 
 void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition)
 {
+	// if Mouse not in canvas panel, return.
+	// Calculate the tile quadrant, tile index, and coordinates
+	const FIntPoint HoveredTileCoordinates = CalculateHoveredTileCoordinates(CanvasPosition, MousePosition);
+	LastTileParameters = TileParameters;
+	TileParameters.TileCoordinates = HoveredTileCoordinates;
+	TileParameters.TileIndex = UInv_WidgetUtils::GetIndexFromPosition(HoveredTileCoordinates, Columns);
+	TileParameters.TileQuadrant = CalculateTileQuadrant(CanvasPosition, MousePosition);
+	//TileParameters.TileQuadrant
+	// Handle Highlight/UnHighlight of the grid slots
+}
+
+EInv_TileQuadrant UInv_InventoryGrid::CalculateTileQuadrant(const FVector2D& CanvasPosition,
+	const FVector2D& MousePosition) const
+{
+	const float TileLocalX = FMath::Fmod(MousePosition.X - CanvasPosition.X, Columns);
+	const float TileLocalY = FMath::Fmod(MousePosition.Y - CanvasPosition.Y, Columns);
+
+	bool bIsLeft = TileLocalX < TileSize / 2.0f;
+	bool bIsTop = TileLocalY < TileSize / 2.0f;
+
+	EInv_TileQuadrant TileQuadrant{EInv_TileQuadrant::None};
+
+	if (bIsLeft && bIsTop)	TileQuadrant = EInv_TileQuadrant::TopLeft;
+	else if (bIsLeft && !bIsTop) TileQuadrant = EInv_TileQuadrant::BottomLeft;
+	else if (!bIsLeft && bIsTop) TileQuadrant = EInv_TileQuadrant::TopRight;
+	else if (!bIsLeft && !bIsTop) TileQuadrant = EInv_TileQuadrant::BottomRight;
+
+	return TileQuadrant;
+}
+
+FIntPoint UInv_InventoryGrid::CalculateHoveredTileCoordinates(const FVector2D& CanvasPosition,
+                                                              const FVector2D& MousePosition) const
+{
+	return FIntPoint(
+		static_cast<int32>(FMath::FloorToInt((MousePosition.X - CanvasPosition.X) / TileSize)),
+		static_cast<int32>(FMath::FloorToInt((MousePosition.Y - CanvasPosition.Y) / TileSize))
+	);
 }
 
 void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* InventoryItem)
