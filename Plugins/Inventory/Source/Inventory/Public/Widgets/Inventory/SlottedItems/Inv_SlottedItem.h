@@ -26,7 +26,7 @@ public:
 	/** Getter and Setter Functions */
 	void SetGridDimensions(FIntPoint InGridDimensions) {GridDimensions = InGridDimensions;}
 	FIntPoint GetGridDimensions() const {return GridDimensions;}
-	void SetGridIndex(int32 Index) {GridIndex = Index;}
+	void SetGridIndex(int32 Index) { GridIndex = Index;}
 	int32 GetGridIndex() const {return GridIndex;}
 	bool bIsStackable() const {return bStackable;}
 	void SetIsStackable(bool Stackable) {bStackable = Stackable;}

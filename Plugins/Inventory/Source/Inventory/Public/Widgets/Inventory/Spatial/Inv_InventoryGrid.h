@@ -73,6 +73,9 @@ private:
 
 	bool IsLeftClick(const FPointerEvent& MouseEvent);
 	bool IsRightClick(const FPointerEvent& MouseEvent);
+
+	void Pickup(UInv_InventoryItem* InventoryItem, const int32 GridIndex);
+	void AssignHoverItem(UInv_InventoryItem* InventoryItem, const int32 GridIndex);
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;
