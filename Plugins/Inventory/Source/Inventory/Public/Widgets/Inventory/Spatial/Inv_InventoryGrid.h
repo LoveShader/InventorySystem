@@ -117,6 +117,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UInv_HoverItem> HoverItem;
+
+	FInv_TileParameters TileParameters;
+	FInv_TileParameters LastTileParameters;
 public:
 	FORCEINLINE	EInv_ItemCategory GetItemCategory() const {return ItemCategory;}
 };
