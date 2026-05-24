@@ -320,11 +320,22 @@ bool UInv_InventoryGrid::IsRightClick(const FPointerEvent& MouseEvent)
 
 void UInv_InventoryGrid::Pickup(UInv_InventoryItem* InventoryItem, const int32 GridIndex)
 {
-	AssignHoverItem(InventoryItem, GridIndex);
+	AssignHoverItem(InventoryItem, GridIndex, GridIndex);
 	// remove the slotted item from the grid
 }
 
-void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* InventoryItem, const int32 GridIndex)
+void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* InventoryItem, const int32 GridIndex,
+	const int32 PreviousGridIndex)
+{
+	AssignHoverItem(InventoryItem);
+
+	HoverItem->SetPreviousGridIndex(PreviousGridIndex);
+	const int32 StackCount = InventoryItem->IsStackable() ? GridSlots[GridIndex]->GetStackCount() : 0;
+	HoverItem->UpdateStackCount(StackCount);
+	HoverItem->SetStackCount(StackCount);
+}
+
+void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* InventoryItem)
 {
 	if (!IsValid(HoverItem))
 	{
@@ -345,7 +356,6 @@ void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* InventoryItem, cons
 
 	HoverItem->SetImageBrush(Brush);
 	HoverItem->SetGridDimensions(GridFragment->GetGridSize());
-	HoverItem->SetPreviousGridIndex(GridIndex);
 	HoverItem->SetIsStackable(InventoryItem->IsStackable());
 
 	GetOwningPlayer()->SetMouseCursorWidget(EMouseCursor::Default, HoverItem);
