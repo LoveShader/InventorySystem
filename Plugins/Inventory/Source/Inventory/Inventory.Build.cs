@@ -39,7 +39,10 @@ public class Inventory : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore", "EnhancedInput", "UMG"
+				"SlateCore", 
+				"EnhancedInput", 
+				"UMG",
+				"InputCore"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

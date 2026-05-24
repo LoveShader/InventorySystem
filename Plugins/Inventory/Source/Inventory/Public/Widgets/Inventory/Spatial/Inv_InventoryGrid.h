@@ -10,6 +10,7 @@
 #include "Inv_InventoryGrid.generated.h"
 
 
+class UInv_HoverItem;
 struct FInv_ImageFragment;
 struct FInv_GridFragment;
 class UInv_SlottedItem;
@@ -69,6 +70,9 @@ private:
 
 	UFUNCTION()
 	void OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
+
+	bool IsLeftClick(const FPointerEvent& MouseEvent);
+	bool IsRightClick(const FPointerEvent& MouseEvent);
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EInv_ItemCategory ItemCategory;
@@ -101,6 +105,13 @@ private:
 
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UInv_SlottedItem>> SlottedItems;
+
+	/** Hover Item */
+	UPROPERTY(EditAnywhere, Category = Inventory)
+	TSubclassOf<UInv_HoverItem> HoverItemClass;
+
+	UPROPERTY()
+	TObjectPtr<UInv_HoverItem> HoverItem;
 public:
 	FORCEINLINE	EInv_ItemCategory GetItemCategory() const {return ItemCategory;}
 };
