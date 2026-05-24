@@ -47,6 +47,7 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 	{
 		//Add stacks to an item that already exists in the inventory. We only  want to update the stackCount,
 		//not create a new item of this type
+		OnStackChange.Broadcast(Result);
 		Server_AddStacksToItem(ItemComponent, Result.TotalAmountToFill, Result.Reminder);
 	} else if (Result.TotalAmountToFill > 0)
 	{
